@@ -8,7 +8,7 @@ if(isset($_SESSION['email'])){
 ?>
 <html>
 <head>
-    <title>Single View App template</title>
+    <title>NBTC</title>
 <!--
     This template can be used for simple application that has just a main view, for applications like Flash light app or Calculator app.
 -->    
@@ -38,11 +38,11 @@ if(isset($_SESSION['email'])){
 <body> 
 <div id="afui">
     <div id="content" style="">
-        <div class="panel" title="Login" id="signin" data-footer="none">
+        <div class="panel" title="NBTC Mobile App" style="padding-left: 50px; padding-right:50px;" id="signin" data-footer="none">
             <div style="text-align:center">
             <br>
             <br>
-            <p>This is space for login message</p>
+            <h2>Login Admin</h2>
             <br>
             <br>
             </div>

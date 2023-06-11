@@ -7,7 +7,7 @@ if(!isset($_SESSION['email'])){
 ?>
 <html>
 <head>
-    <title>Tab View App template</title>
+    <title>NBTC</title>
 <!--
     This template can be used for simple tab view application that has tabs at the bottom to switch views, for applications like Phone app, Facebook App or Instagram app.
 --> 
