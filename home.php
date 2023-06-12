@@ -585,9 +585,13 @@ if(!isset($_SESSION['email'])){
 
                    
 
-                    $("#afui").popup({
+                   $('#dspl').html(htm);
+                   
+                });
+
+                $("#afui").popup({
                         title: 'Vehicle',
-                        message: htm,
+                        message: '<div id="dspl"></div>',
                         doneText: "New type",
                         doneCallback: function(){
                             addtype();
@@ -598,8 +602,6 @@ if(!isset($_SESSION['email'])){
                         },
                         cancelOnly: false
                     }); 
-                   
-                });
 
                 // console.log(sas);
                 // console.log(lastN);
