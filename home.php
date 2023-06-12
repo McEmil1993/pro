@@ -289,7 +289,7 @@ if(!isset($_SESSION['email'])){
             $.each(value, function(index, value){
                 if(value) {
                     
-                    htmls +=' <li onclick="updatebasefare('+index+')"><p>Rate: P '+value.rate+'</p><p>Date: '+value.date+'</p> <p>Status: '+value.status+'</p><input type="hidden" id="rate_e'+index+'" value="'+value.rate+'" /><input type="hidden" id="status_e'+index+'" value="'+value.status+'" /></li>';
+                    htmls +=' <li onclick="updatebasefare('+index+')"><p>Rate: P '+parseInt(value.rate).toFixed(2)+' / km</p><p>Date: '+value.date+'</p> <p>Status: '+value.status+'</p><input type="hidden" id="rate_e'+index+'" value="'+value.rate+'" /><input type="hidden" id="status_e'+index+'" value="'+value.status+'" /></li>';
                                
                 }
                  
