@@ -558,6 +558,20 @@ if(!isset($_SESSION['email'])){
             }
         var lastN = 0;
         function vechiletype(){
+
+            $("#afui").popup({
+                        title: 'Vehicle',
+                        message: '<div id="dspl"></div>',
+                        doneText: "New type",
+                        doneCallback: function(){
+                            addtype();
+                        },
+                        cancelText: "Cancel",
+                        cancelCallback: function(){
+                            
+                        },
+                        cancelOnly: false
+                    }); 
             var htm = '';
             var sas = '';
             
@@ -589,19 +603,7 @@ if(!isset($_SESSION['email'])){
                    
                 });
 
-                $("#afui").popup({
-                        title: 'Vehicle',
-                        message: '<div id="dspl"></div>',
-                        doneText: "New type",
-                        doneCallback: function(){
-                            addtype();
-                        },
-                        cancelText: "Cancel",
-                        cancelCallback: function(){
-                            window.location.reload();
-                        },
-                        cancelOnly: false
-                    }); 
+               
 
                 // console.log(sas);
                 // console.log(lastN);
@@ -616,7 +618,7 @@ if(!isset($_SESSION['email'])){
                 message: "Type: <input type='text' id='type' class='af-ui-forms'><br>",
                 cancelText: "Cancel",
                 cancelCallback: function(){
-                    window.location.reload();
+                   
                 },
                 doneText: "Submit",
                 doneCallback: function(){
@@ -625,7 +627,7 @@ if(!isset($_SESSION['email'])){
                         type: _type,
                     });
 
-                    window.location.reload();
+                   
                 },
                 cancelOnly: false
             });   
@@ -638,7 +640,7 @@ if(!isset($_SESSION['email'])){
                 message: "You want to delete?",
                 cancelText: "Cancel",
                 cancelCallback: function(){
-                    window.location.reload();
+                   
                 },
                 doneText: "Submit",
                 doneCallback: function(){
