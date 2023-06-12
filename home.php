@@ -559,19 +559,20 @@ if(!isset($_SESSION['email'])){
         var lastN = 0;
         function vechiletype(){
 
-            $("#afui").popup({
-                        title: 'Vehicle',
-                        message: '<div id="dspl"></div>',
-                        doneText: "New type",
-                        doneCallback: function(){
-                            addtype();
-                        },
-                        cancelText: "Cancel",
-                        cancelCallback: function(){
-                            
-                        },
-                        cancelOnly: false
-                    }); 
+                $("#afui").popup({
+                            title: 'Vehicle',
+                            message: '<div id="dspl"></div>',
+                            doneText: "New type",
+                            doneCallback: function(){
+                                addtype();
+                            },
+                            cancelText: "Cancel",
+                            cancelCallback: function(){
+                                
+                            },
+                            cancelOnly: false
+                        }); 
+
             var htm = '';
             var sas = '';
             
@@ -635,21 +636,9 @@ if(!isset($_SESSION['email'])){
 
         function deletetype(id){
             
-            $("#afui").popup({
-                title: 'Delete type vehicle',
-                message: "You want to delete?",
-                cancelText: "Cancel",
-                cancelCallback: function(){
-                   
-                },
-                doneText: "Submit",
-                doneCallback: function(){
-                    firebase.database().ref('Vehicle/' + id).remove();
+             firebase.database().ref('Vehicle/' + id).remove();
 
-                    window.location.reload();
-                },
-                cancelOnly: false
-            });   
+
         }
 
         
