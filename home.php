@@ -572,7 +572,7 @@ if(!isset($_SESSION['email'])){
                             },
                             cancelOnly: false
                         }); 
-
+                        
             var htm = '';
             var sas = '';
             
@@ -636,9 +636,8 @@ if(!isset($_SESSION['email'])){
 
         function deletetype(id){
             
-             firebase.database().ref('Vehicle/' + id).remove();
-
-
+            firebase.database().ref('Vehicle/' + id).remove();
+            window.location.reload();
         }
 
         
