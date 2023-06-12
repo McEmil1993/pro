@@ -52,10 +52,12 @@ if(!isset($_SESSION['email'])){
         
     <!--Tab View Pages-->
         <div class="panel" title="Home" id="page1" data-tab="tab1" selected="true">
-            <header>
-                <h1>Home</h1>
-            </header>
-            <ul class="list" id="table-list">
+        <header id="header1">
+            <h1>My Title</h1>
+                <!-- <a href="#" class="button icon trash" onclick="trash()"></a> -->
+                <a href="#" class="button icon user" onclick="login()" style="float:right">add</a>
+        </header>
+        <ul class="list" id="table-list">
                 
                 <li>
                     <center>
@@ -68,18 +70,29 @@ if(!isset($_SESSION['email'])){
             </ul>
         </div>
         
-        <div class="panel" title="Favorites" id="page2" data-tab="tab2">
+        <div class="panel" title="Commuter" id="page2" data-tab="tab2">
             <header>
-                <h1>Favorites</h1>
+                <h1>Commuter</h1>
             </header>
-            <p>This is view for second Tab</p>
+            <ul class="list" id="table-list-commuter">
+                    
+                <li>
+                    <center>
+                        <b>
+                            Load Data ....
+                        </b>
+                        
+                    </center>
+                </li>                
+            </ul>
         </div>
         
-        <div class="panel" title="Messages" id="page3" data-tab="tab3">
+        <div class="panel" title="Rate" id="page3" data-tab="tab3">
             <header>
-                <h1>Messages</h1>
+                <h1>Rate</h1>
             </header>
             <p>This is view for third Tab</p>
+            
         </div>
         
         <div class="panel" title="Profile" id="page4" data-tab="tab4">
@@ -105,15 +118,15 @@ if(!isset($_SESSION['email'])){
     <!--Footer with Tabs or Navigation bar -->
     <div id="navbar">
         <a href="#page1" id='tab1' class="icon home" data-transition="none">Home</a>
-        <a href="#page2" id='tab2' class="icon heart" data-transition="none">Favorites</a>
-        <a href="#page3" id='tab3' class="icon chat" data-transition="none">Messages</a>
-        <a href="#" id='tab4' onclick="logout1()" class="icon user" data-transition="none">Profile</a>
+        <a href="#page2" id='tab2' class="icon user" data-transition="none">Commuter</a>
+        <a href="#page3" id='tab3' class="icon tag"  data-transition="none">Rate</a>
+        <a href="#" id='tab4' onclick="logout1()" class="icon right" data-transition="none">Logout</a>
     </div>
     <div id="ids">
         
     </div>
    
-    
+    <!-- RidersInformation -->
 
 </div>
     <script>$('#m1').click(function(){
@@ -156,6 +169,7 @@ if(!isset($_SESSION['email'])){
             $.each(value, function(index, value){
                 if(value) {
                     var img = "user.png";
+                    console.log(value.avatarUrl);
                     if (value.avatarUrl != undefined) {
                         var img = value.avatarUrl;
                     }
@@ -211,6 +225,41 @@ if(!isset($_SESSION['email'])){
           
         });
 
+        database.ref("RidersInformation").on('value', function(snapshot) {
+            var value = snapshot.val();
+            var htmls = '';
+            var htmls1 = '';
+            var count = 1;
+            var count2 = 1;
+          
+            $.each(value, function(index, value){
+                if(value) {
+                    var img = "user.png";
+
+                    if (value.avatarUrl != undefined) {
+                        var img = value.avatarUrl;
+                    }
+
+                    htmls +='<li>\
+                                    <p id="mon'+count+'" data-email="'+value.email+'" data-password="'+value.password+'">\
+                                        <img class="list-image" src="'+img+'" />\
+                                        <div class="list-text"><b>'+value.name+'</b><br>'+value.email+'<br>'+value.phone+'</div>\
+                                    </p>\
+                                </li>';
+
+
+                }
+
+                count++;
+
+            });
+            $('#table-list-commuter').html(htmls);
+
+
+          
+        });
+
+       
         function logout1(){
             location.href = 'logout.php';
         }
@@ -229,7 +278,7 @@ if(!isset($_SESSION['email'])){
                 })
                 .catch((error) => {
                     // var errorCode = error.code;
-                    $.ui.hideModal();
+                    // $.ui.hideModal();
                     var errorMessage = error.message;
                     console.log(errorMessage);
                 });
@@ -284,6 +333,117 @@ if(!isset($_SESSION['email'])){
             });
 
         }
+
+        function trash(){
+            $("#afui").actionsheet(
+                [{
+                    text: 'Rate',
+                    cssClasses: 'red',
+                    handler: function () {
+                    }
+                },{
+                    text: 'Remove All',
+                    cssClasses: 'red',
+                    handler: function () {
+                    }
+                }]
+            );
+        }
+
+        function login(){
+            $("#afui").popup({
+                type:'overlay',
+                title: "Add Driver",
+                message: "Email: <input type='email' class='af-ui-forms' id='new_email' required><br>Password: <input type='password' id='new_password' class='af-ui-forms' style='webkit-text-security:disc' required><br>Name: <input type='text' id='new_name' class='af-ui-forms' style='webkit-text-security:disc' required><br>Phone: <input type='text' class='af-ui-forms' id='new_phone' style='webkit-text-security:disc' required>",
+                cancelText: "Cancel",
+                cancelCallback: function(){},
+                doneText: "Submit",
+                doneCallback: function(){
+                    var name = "";
+                    var ph = "";
+                    var pass = "";
+                    // alert($('#new_email').val());
+                    if($('#new_email').val() == ""){
+                        // $('#new_email').attr('style','border:1px solid red');
+                        alertmess('Email');
+                        login();
+                       
+                    }else if($('#new_password').val() == ""){
+                        alertmess('Password');
+                        login();
+                       
+                    }else if($('#new_name').val() == ""){
+                        alertmess('Name');
+                        login();
+                       
+                    }else if($('#new_phone').val() == ""){
+                        alertmess('Phone');
+                        login();
+                       
+                    }else{
+                        name = $('#new_name').val();
+                        ph = $('#new_phone').val();
+                        pass = $('#new_password').val();
+                        const promise = firebase.auth().createUserWithEmailAndPassword($('#new_email').val(),pass);
+                        promise.catch(e => console.log(e.message));
+
+
+                        firebase.auth().onAuthStateChanged(function(user){
+                            
+                                if(user){
+                                    
+                                    var asd = user.uid;
+                                    firebase.database().ref('DriversInformation/' + asd).set({
+                                        avatarUrl:'https://firebasestorage.googleapis.com/v0/b/nbtc-ff2e5.appspot.com/o/images%2Fuser.png?alt=media&token=ccb47963-0cfb-42b8-9f4d-7057ada0bbb2&_gl=1*vualsm*_ga*MTcyNDcwODYyMy4xNjg2NTUwOTUz*_ga_CW55HF8NVT*MTY4NjU1MDk1Mi4xLjEuMTY4NjU1ODc4NC4wLjAuMA..',
+                                        carType: '',
+                                        email: user.email,
+                                        name: name,
+                                        password: pass,
+                                        phone: ph
+                                    });
+
+                                    firebase.auth().signOut();
+                                    alertSucess();
+                                    
+                                }
+                            
+
+		                });
+
+                        // signOut();
+                    }
+
+                },
+                cancelOnly: false,
+                keepfocus:true
+
+            });             
+        }
+
+
+        function alertmess(name){
+            $("#afui").popup({
+                title: "Require",
+                message: "Please input field "+name ,
+                cancelText: "Ok",
+                cancelCallback: function(){},
+                
+                cancelOnly: true
+            });             
+        }
+
+        function alertSucess(){
+            $("#afui").popup({
+                title: "Success",
+                message: "Add new driver success!" ,
+                cancelText: "Ok",
+                cancelCallback: function(){},
+                cancelOnly: true
+            });             
+        }
+
+        
+
 
     </script>
     

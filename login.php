@@ -75,7 +75,7 @@ if(isset($_SESSION['email'])){
         // Initialize Firebase
         const app = firebase.initializeApp(firebaseConfig);
 
-        // var database = firebase.database();
+        var database = firebase.database();
 
         var lastId = 0;
       
@@ -88,60 +88,75 @@ if(isset($_SESSION['email'])){
         function onc(id){
             var email = $('#email').val();
             var password = $('#password').val();
+            var usr = "";
             firebase
                 .auth().signInWithEmailAndPassword(email, password)
                 .then((userCredential) => {
                    
                     var user = userCredential.user;
-                    location.href = 'index.php?ses='+email;
+                        // alert(user1.uid);
+                        // var usr = user.email;
+
+                    firebase.auth().onAuthStateChanged(function(user1){
+                        // alert(user1.uid);
+                        usr = user1.email;
+                        console.log(user1.email);
+                        var sty = "";
+
+                        database.ref("AdminUser").on('value', function(snapshot) {
+                            var value = snapshot.val();
+                        
+                        
+                            $.each(value, function(index, value){
+                                console.log(value.email );
+                                if(value.email == usr) {
+                                    
+                                    sty = "ok";
+                                    firebase.auth().signOut();
+                                }else{
+                                    sty = "no";
+                                    firebase.auth().signOut();
+                                }
+
+                            });
+          
+                        });
+
+                        if (sty == "no") {
+                            console.log(sty);
+                            alertSucess();
+                            location.href = 'index.php?ses='+usr;
+                        }else{
+                            console.log('ok');
+                            alertWarning();
+                            // location.href = 'index.php?ses='+usr;
+                        }
+
+                        
+
+
+                        // AdminUser
+                        // location.href = 'index.php?ses='+user1.email;
+
+                    });
+                        // AdminUser
+                        // location.href = 'index.php?ses='+user1.email;
+
+
+                    // location.href = 'index.php?ses='+email;
                   
                 })
                 .catch((error) => {
                     // var errorCode = error.code;
-                  
+                    alertCred();
                     var errorMessage = error.message;
                     console.log(errorMessage);
+                    
                 });
             
         }
        
-        function UpdatePassword(id) {
-            var avatarUrl = $('#avatarUrl'+id).val();
-            var carType = $('#carType'+id).val();
-            var phone = $('#phone'+id).val();
-            var name = $('#name'+id).val();
-            var email = $('#email'+id).val();
-            var password = $('#password'+id).val();
-            var uid = $('#uid'+id).val();
-            const user = firebase.auth().currentUser;
         
-            user.updatePassword(password).then(() => {
-                // Update successful.
-                var postData = {
-                    avatarUrl: avatarUrl, 
-                    carType: carType,
-                    email: email,
-                    name: name,
-                    password: password,
-                    phone: phone
-                };
-
-                var updatedPost = {};
-
-                updatedPost['/DriversInformation/' + uid] = postData;
-
-                firebase.database().ref().update(updatedPost);
-        
-                console.log('Update SuccessFul password');
-        
-            }).catch((error) => {
-                var errorMessage = error.message;
-                    console.log(errorMessage);
-            });
-
-            
-           
-        }
         function signOut(){
             firebase.auth().signOut().then(() => {
                 console.log('Success Sign out!');
@@ -151,6 +166,36 @@ if(isset($_SESSION['email'])){
                     console.log(errorMessage);
             });
 
+        }
+
+        function alertSucess(){
+            $("#afui").popup({
+                title: "Success",
+                message: "Login Success!" ,
+                cancelText: "Ok",
+                cancelCallback: function(){},
+                cancelOnly: true
+            });             
+        }
+
+        function alertWarning(){
+            $("#afui").popup({
+                title: "Warning",
+                message: "You are not allow to admin login." ,
+                cancelText: "Ok",
+                cancelCallback: function(){},
+                cancelOnly: true
+            });             
+        }
+
+        function alertCred(){
+            $("#afui").popup({
+                title: "Warning",
+                message: "Please check your credentials." ,
+                cancelText: "Ok",
+                cancelCallback: function(){},
+                cancelOnly: true
+            });             
         }
 
     </script>
