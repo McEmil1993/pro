@@ -594,15 +594,15 @@ if(!isset($_SESSION['email'])){
                         },
                         cancelText: "Cancel",
                         cancelCallback: function(){
-                            document.location.reload(true);
+                            window.location.reload();
                         },
                         cancelOnly: false
                     }); 
                    
                 });
 
-                console.log(sas);
-                console.log(lastN);
+                // console.log(sas);
+                // console.log(lastN);
                 
                         
         }
@@ -614,7 +614,7 @@ if(!isset($_SESSION['email'])){
                 message: "Type: <input type='text' id='type' class='af-ui-forms'><br>",
                 cancelText: "Cancel",
                 cancelCallback: function(){
-                   
+                    window.location.reload();
                 },
                 doneText: "Submit",
                 doneCallback: function(){
@@ -623,7 +623,7 @@ if(!isset($_SESSION['email'])){
                         type: _type,
                     });
 
-                    document.location.reload(true);
+                    window.location.reload();
                 },
                 cancelOnly: false
             });   
@@ -636,13 +636,13 @@ if(!isset($_SESSION['email'])){
                 message: "You want to delete?",
                 cancelText: "Cancel",
                 cancelCallback: function(){
-                    document.location.reload(true);
+                    window.location.reload();
                 },
                 doneText: "Submit",
                 doneCallback: function(){
                     firebase.database().ref('Vehicle/' + id).remove();
 
-                    document.location.reload(true);
+                    window.location.reload();
                 },
                 cancelOnly: false
             });   
