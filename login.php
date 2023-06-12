@@ -79,11 +79,6 @@ if(isset($_SESSION['email'])){
 
         var lastId = 0;
       
-        // get post 
-       
-        // if(user){
-        //     location.href = 'home.php?email=&password=';
-        // }
 
         function onc(id){
             var email = $('#email').val();
@@ -92,62 +87,30 @@ if(isset($_SESSION['email'])){
             firebase
                 .auth().signInWithEmailAndPassword(email, password)
                 .then((userCredential) => {
-                   
-                    var user = userCredential.user;
-                        // alert(user1.uid);
-                        // var usr = user.email;
+       
+                        firebase.database().ref('AdminUser/' + userCredential.uid).on('value', function(snapshot) {
 
-                    firebase.auth().onAuthStateChanged(function(user1){
-                        // alert(user1.uid);
-                        usr = user1.email;
-                        console.log(user1.email);
-                        var sty = "";
+                            try {
+                                var values = snapshot.val();
 
-                        database.ref("AdminUser").on('value', function(snapshot) {
-                            var value = snapshot.val();
-                        
-                        
-                            $.each(value, function(index, value){
-                                console.log(value.email );
-                                if(value.email == usr) {
-                                    
-                                    sty = "ok";
-                                    firebase.auth().signOut();
-                                }else{
-                                    sty = "no";
-                                    firebase.auth().signOut();
-                                }
+                                console.log(values.email);
+                                alertSucess();
+                                        
+                                location.href = 'index.php?ses='+values.email;
 
-                            });
-          
+
+                            } catch (err) {
+                                console.log(err.message);
+                                alertWarning();
+                                        firebase.auth().signOut();
+                                
+                            }
                         });
 
-                        if (sty == "no") {
-                            console.log(sty);
-                            alertSucess();
-                            location.href = 'index.php?ses='+usr;
-                        }else{
-                            console.log('ok');
-                            alertWarning();
-                            // location.href = 'index.php?ses='+usr;
-                        }
 
-                        
-
-
-                        // AdminUser
-                        // location.href = 'index.php?ses='+user1.email;
-
-                    });
-                        // AdminUser
-                        // location.href = 'index.php?ses='+user1.email;
-
-
-                    // location.href = 'index.php?ses='+email;
                   
                 })
                 .catch((error) => {
-                    // var errorCode = error.code;
                     alertCred();
                     var errorMessage = error.message;
                     console.log(errorMessage);
