@@ -997,7 +997,7 @@ body {
   top: 48%;
   margin-top: -10px;
 }
-#afui .list > li > a:after {
+/* #afui .list > li > a:after {
   position: absolute;
   right: 8px;
   font-family: 'chevron';
@@ -1012,7 +1012,7 @@ body {
   top: 50%;
   margin-top: -0.5em;
   color:inherit;
-}
+} */
 #afui .list .divider {
   position: relative;
   top: -1px;

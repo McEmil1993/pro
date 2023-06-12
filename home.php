@@ -53,9 +53,9 @@ if(!isset($_SESSION['email'])){
     <!--Tab View Pages-->
         <div class="panel" title="Home" id="page1" data-tab="tab1" selected="true">
         <header id="header1">
-            <h1>My Title</h1>
-                <!-- <a href="#" class="button icon trash" onclick="trash()"></a> -->
-                <a href="#" class="button icon user" onclick="login()" style="float:right">add</a>
+            <h1>Drivers</h1>
+                
+                <a href="#" class="button icon user" onclick="login()" style="float:right"> New</a>
         </header>
         <ul class="list" id="table-list">
                 
@@ -88,10 +88,24 @@ if(!isset($_SESSION['email'])){
         </div>
         
         <div class="panel" title="Rate" id="page3" data-tab="tab3">
-            <header>
-                <h1>Rate</h1>
+            <header id="header1">
+                <h1>Rates</h1>
+                    <a href="#" class="button icon " onclick="vechiletype()"> Vehicle</a>
+                    <a href="#" class="button icon user" onclick="basefare()" style="float:right"> Rate</a>
             </header>
-            <p>This is view for third Tab</p>
+            <ul class="list" id="table-list-rates">
+                    
+                <li>
+                    <center>
+                        <b>
+                            Load Data ....
+                        </b>
+                        
+                    </center>
+                </li>                
+            </ul>
+            <!-- $date = date("D M d Y"); -->
+            
             
         </div>
         
@@ -117,7 +131,7 @@ if(!isset($_SESSION['email'])){
     
     <!--Footer with Tabs or Navigation bar -->
     <div id="navbar">
-        <a href="#page1" id='tab1' class="icon home" data-transition="none">Home</a>
+        <a href="#page1" id='tab1' class="icon user" data-transition="none">Drivers</a>
         <a href="#page2" id='tab2' class="icon user" data-transition="none">Commuter</a>
         <a href="#page3" id='tab3' class="icon tag"  data-transition="none">Rate</a>
         <a href="#" id='tab4' onclick="logout1()" class="icon right" data-transition="none">Logout</a>
@@ -187,6 +201,9 @@ if(!isset($_SESSION['email'])){
                 count++;
 
             });
+            if(value===null){
+                htmls += '<li><center><h4>No data</h4></center></li>';
+            }
             $('#table-list').html(htmls);
 
             $.each(value, function(index, value){
@@ -220,6 +237,9 @@ if(!isset($_SESSION['email'])){
                 }
 
             });
+            if(value===null){
+                htmls1 += '<li><center><h4>No data</h4></center></li>';
+            }
             $('#ids').html(htmls1);
 
           
@@ -255,6 +275,33 @@ if(!isset($_SESSION['email'])){
             });
             $('#table-list-commuter').html(htmls);
 
+
+          
+        });
+        var lastId = 0;
+        database.ref("Basefare").on('value', function(snapshot) {
+            var value = snapshot.val();
+            var htmls = '';
+            var htmls1 = '';
+            var count = 1;
+            var count2 = 1;
+          
+            $.each(value, function(index, value){
+                if(value) {
+                    
+                    htmls +=' <li onclick="updatebasefare('+index+')"><p>Rate: '+value.rate+'</p><p>Date: '+value.date+'</p> <p>Status: '+value.status+'</p><input type="hidden" id="rate_e'+index+'" value="'+value.rate+'" /><input type="hidden" id="status_e'+index+'" value="'+value.status+'" /></li>';
+                               
+                }
+                 
+                lastId = index;
+                count++;
+
+            });
+            if(value===null){
+                htmls += '<li><center><h4>No data</h4></center></li>';
+            }
+            // console.log(count);
+            $('#table-list-rates').html(htmls);
 
           
         });
@@ -297,25 +344,23 @@ if(!isset($_SESSION['email'])){
             const user = firebase.auth().currentUser;
         
             user.updatePassword(password).then(() => {
-                // Update successful.
-                var postData = {
-                    avatarUrl: avatarUrl, 
-                    carType: carType,
-                    email: email,
-                    name: name,
-                    password: password,
-                    phone: phone
-                };
 
-                var updatedPost = {};
-
-                updatedPost['/DriversInformation/' + uid] = postData;
-
-                firebase.database().ref().update(updatedPost);
+                firebase.database().ref('DriversInformation/' + uid).set(
+                    { 
+                        avatarUrl: avatarUrl, 
+                        carType: carType,
+                        email: email,
+                        name: name,
+                        password: password,
+                        phone: phone
+                    }
+                );
+               
         
                 console.log('Update SuccessFul password');
-        
+                alertSucessUpdate();
             }).catch((error) => {
+                firebase.auth().signOut();
                 var errorMessage = error.message;
                     console.log(errorMessage);
             });
@@ -351,6 +396,8 @@ if(!isset($_SESSION['email'])){
         }
 
         function login(){
+
+
             $("#afui").popup({
                 type:'overlay',
                 title: "Add Driver",
@@ -381,36 +428,28 @@ if(!isset($_SESSION['email'])){
                         login();
                        
                     }else{
+
                         name = $('#new_name').val();
                         ph = $('#new_phone').val();
                         pass = $('#new_password').val();
-                        const promise = firebase.auth().createUserWithEmailAndPassword($('#new_email').val(),pass);
-                        promise.catch(e => console.log(e.message));
-
-
-                        firebase.auth().onAuthStateChanged(function(user){
-                            
-                                if(user){
-                                    
-                                    var asd = user.uid;
+                        const promise = firebase.auth().createUserWithEmailAndPassword($('#new_email').val(),pass)
+                        .then((userCredential) => {
+                            // console.log(userCredential.uid);
+                            var asd = userCredential.uid;
                                     firebase.database().ref('DriversInformation/' + asd).set({
                                         avatarUrl:'https://firebasestorage.googleapis.com/v0/b/nbtc-ff2e5.appspot.com/o/images%2Fuser.png?alt=media&token=ccb47963-0cfb-42b8-9f4d-7057ada0bbb2&_gl=1*vualsm*_ga*MTcyNDcwODYyMy4xNjg2NTUwOTUz*_ga_CW55HF8NVT*MTY4NjU1MDk1Mi4xLjEuMTY4NjU1ODc4NC4wLjAuMA..',
                                         carType: '',
-                                        email: user.email,
+                                        email: userCredential.email,
                                         name: name,
                                         password: pass,
                                         phone: ph
                                     });
+                            alertSucess();
 
-                                    firebase.auth().signOut();
-                                    alertSucess();
-                                    
-                                }
-                            
+                        });
+                        promise.catch(e => console.log(e.message));
 
-		                });
-
-                        // signOut();
+                        
                     }
 
                 },
@@ -440,6 +479,173 @@ if(!isset($_SESSION['email'])){
                 cancelCallback: function(){},
                 cancelOnly: true
             });             
+        }
+
+        function alertSucessUpdate(){
+            $("#afui").popup({
+                title: "Success",
+                message: "Update new driver success!" ,
+                cancelText: "Ok",
+                cancelCallback: function(){},
+                cancelOnly: true
+            });             
+        }
+
+        function basefare(){
+
+            var dt = "<?= date("D M d Y") ?>";
+
+            var createId = Number(lastId) + 1;
+
+            $("#afui").popup({
+                title: "Basefare",
+                message: "Rate: <input type='number' id='rate' class='af-ui-forms'><br><select name='status' id='status_rate' class='af-ui-forms'><option value='Active'>Active</option><option value='Unactive'>Unactive</option></select><input type='hidden' id='date_now' value='"+dt+"' />",
+                cancelText: "Cancel",
+                cancelCallback: function(){},
+                doneText: "Submit",
+                doneCallback: function(){
+
+                    var _rate = $('#rate').val();
+                    var _status_rate = $('#status_rate').val();
+
+                    firebase.database().ref('Basefare/' + createId).set({
+                        rate: _rate,
+                        status: _status_rate,
+                        date: dt
+                    });
+
+                },
+                cancelOnly: false
+            });             
+        }
+
+        function updatebasefare(id){
+
+            var dt = "<?= date("D M d Y") ?>";
+            var st = $('#status_e'+id).val();
+            var rt = $('#rate_e'+id).val();
+            var ac = "";
+            var un = "";
+            console.log(st);
+            if (st == "Active") {
+                un = "";
+                ac = "selected";
+            } else {
+                ac = "";
+                un = "selected";
+            }
+
+            $("#afui").popup({
+                title: "Basefare",
+                message: "Rate: <input type='number' id='rate_update' class='af-ui-forms' value='"+rt+"' ><br><select name='status' id='status_rate_update' class='af-ui-forms'><option value='Active' "+ac+" >Active</option><option value='Unactive' "+un+" >Unactive</option></select><input type='hidden' id='date_now_update' value='"+dt+"' /><input type='hidden' id='id_update' value='"+dt+"' />",
+                cancelText: "Cancel",
+                cancelCallback: function(){},
+                doneText: "Submit",
+                doneCallback: function(){
+
+                    var _rate = $('#rate_update').val();
+                    var _status_rate = $('#status_rate_update').val();
+
+                    firebase.database().ref('Basefare/' + id).set({
+                        rate: _rate,
+                        status: _status_rate,
+                        date: dt
+                    });
+
+                },
+                cancelOnly: false
+            });             
+            }
+        var lastN = 0;
+        function vechiletype(){
+            var htm = '';
+            var sas = '';
+            
+            database.ref("Vehicle").on('value', function(snapshot) {
+                    var value = snapshot.val();
+                    
+                    htm += '<ul class="list" id="table-list-rates">';
+                    $.each(value, function(index, value){
+                        if(value) {
+                            
+                            htm +='<li style="padding:5px 0px 5px 0px">\
+                                        <p >'+value.type+'</p> <a class="icon trash" style="position: absolute;right: 0;top: 12px;" onclick="deletetype('+index+')"></a>\
+                                    </li>';
+                                    
+                        }
+                        
+                        lastN = index;
+
+                    });
+                    if(value===null){
+                        htm += '<li><center><p>No data</p></center></li>';
+                    }
+
+                    htm += '</ul>'; 
+
+                   
+
+                    $("#afui").popup({
+                        title: 'Vehicle',
+                        message: htm,
+                        doneText: "New type",
+                        doneCallback: function(){
+                            addtype();
+                        },
+                        cancelText: "Cancel",
+                        cancelCallback: function(){
+                            location.reload();
+                        },
+                        cancelOnly: false
+                    }); 
+                   
+                });
+
+                console.log(sas);
+                console.log(lastN);
+                
+                        
+        }
+
+        function addtype(){
+            var createId = Number(lastN) + 1;
+            $("#afui").popup({
+                title: 'New type vehicle',
+                message: "Type: <input type='text' id='type' class='af-ui-forms'><br>",
+                cancelText: "Cancel",
+                cancelCallback: function(){
+                   
+                },
+                doneText: "Submit",
+                doneCallback: function(){
+                    var _type = $('#type').val();
+                    firebase.database().ref('Vehicle/' + createId).set({
+                        type: _type,
+                    });
+
+                    location.reload();
+                },
+                cancelOnly: false
+            });   
+        }
+
+        function deletetype(id){
+            
+            $("#afui").popup({
+                title: 'Delete type vehicle',
+                message: "You want to delete?",
+                cancelText: "Cancel",
+                cancelCallback: function(){
+                    location.reload();
+                },
+                doneText: "Submit",
+                doneCallback: function(){
+                    firebase.database().ref('Vehicle/' + id).remove();
+
+                    location.reload();
+                },
+                cancelOnly: false
+            });   
         }
 
         
