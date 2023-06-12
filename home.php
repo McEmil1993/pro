@@ -561,7 +561,7 @@ if(!isset($_SESSION['email'])){
 
                 $("#afui").popup({
                             title: 'Vehicle',
-                            message: '<div id="dspl"></div>',
+                            message: '<ul class="list" id="table-list-dspl" ></ul>',
                             doneText: "New type",
                             doneCallback: function(){
                                 addtype();
@@ -579,7 +579,7 @@ if(!isset($_SESSION['email'])){
             database.ref("Vehicle").on('value', function(snapshot) {
                     var value = snapshot.val();
                     
-                    htm += '<ul class="list" id="table-list-rates">';
+                    htm = '';
                     $.each(value, function(index, value){
                         if(value) {
                             
@@ -596,11 +596,8 @@ if(!isset($_SESSION['email'])){
                         htm += '<li><center><p>No data</p></center></li>';
                     }
 
-                    htm += '</ul>'; 
 
-                   
-
-                   $('#dspl').html(htm);
+                   $('#table-list-dspl').html(htm);
                    
                 });
 
